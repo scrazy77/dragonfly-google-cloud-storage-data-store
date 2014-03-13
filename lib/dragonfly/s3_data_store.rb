@@ -9,18 +9,18 @@ module Dragonfly
     # Exceptions
     class NotConfigured < RuntimeError; end
 
-    REGIONS = {
-      'us-east-1' => 's3.amazonaws.com',  #default
-      'us-west-1' => 's3-us-west-1.amazonaws.com',
-      'us-west-2' => 's3-us-west-2.amazonaws.com',
-      'ap-northeast-1' => 's3-ap-northeast-1.amazonaws.com',
-      'ap-southeast-1' => 's3-ap-southeast-1.amazonaws.com',
-      'ap-southeast-2' => 's3-ap-southeast-2.amazonaws.com',
-      'eu-west-1' => 's3-eu-west-1.amazonaws.com',
-      'sa-east-1' => 's3-sa-east-1.amazonaws.com'
-    }
+    # REGIONS = {
+    #   'us-east-1' => 's3.amazonaws.com',  #default
+    #   'us-west-1' => 's3-us-west-1.amazonaws.com',
+    #   'us-west-2' => 's3-us-west-2.amazonaws.com',
+    #   'ap-northeast-1' => 's3-ap-northeast-1.amazonaws.com',
+    #   'ap-southeast-1' => 's3-ap-southeast-1.amazonaws.com',
+    #   'ap-southeast-2' => 's3-ap-southeast-2.amazonaws.com',
+    #   'eu-west-1' => 's3-eu-west-1.amazonaws.com',
+    #   'sa-east-1' => 's3-sa-east-1.amazonaws.com'
+    # }
 
-    SUBDOMAIN_PATTERN = /^[a-z0-9][a-z0-9.-]+[a-z0-9]$/
+    # SUBDOMAIN_PATTERN = /^[a-z0-9][a-z0-9.-]+[a-z0-9]$/
 
     def initialize(opts={})
       @bucket_name       = opts[:bucket_name]
@@ -86,19 +86,17 @@ module Dragonfly
     def storage
       @storage ||= begin
         storage = Fog::Storage.new({
-          :provider => 'AWS',
-          :aws_access_key_id => access_key_id,
-          :aws_secret_access_key => secret_access_key,
-          :region => region,
-          :use_iam_profile => use_iam_profile
-        }.reject {|name, option| option.nil?})
-        storage.sync_clock
+          :provider                         => 'Google',
+          :google_storage_access_key_id     => access_key_id,
+          :google_storage_secret_access_key => secret_access_key
+        })
+        # storage.sync_clock
         storage
       end
     end
 
     def bucket_exists?
-      rescuing_socket_errors{ storage.get_bucket_location(bucket_name) }
+      rescuing_socket_errors{ storage.get_bucket(bucket_name) }
       true
     rescue Excon::Errors::NotFound => e
       false
