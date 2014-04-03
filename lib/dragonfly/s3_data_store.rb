@@ -27,7 +27,7 @@ module Dragonfly
       @access_key_id     = opts[:access_key_id]
       @secret_access_key = opts[:secret_access_key]
       @region            = opts[:region]
-      @storage_headers   = opts[:storage_headers] || {'x-amz-acl' => 'public-read'}
+      @storage_headers   = opts[:storage_headers] || {'x-goog-acl' => 'public-read'}
       @url_scheme        = opts[:url_scheme] || 'http'
       @url_host          = opts[:url_host]
       @use_iam_profile   = opts[:use_iam_profile]
@@ -143,7 +143,7 @@ module Dragonfly
     end
 
     def headers_to_meta(headers)
-      json = headers['x-amz-meta-json']
+      json = headers['x-goog-meta-json']
       if json && !json.empty?
         Serializer.json_decode(json)
       elsif marshal_data = headers['x-amz-meta-extra']
@@ -152,7 +152,7 @@ module Dragonfly
     end
 
     def meta_to_headers(meta)
-      {'x-amz-meta-json' => Serializer.json_encode(meta)}
+      {'x-goog-meta-json' => Serializer.json_encode(meta)}
     end
 
     def valid_regions
