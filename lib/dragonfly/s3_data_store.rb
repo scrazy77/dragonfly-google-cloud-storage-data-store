@@ -135,7 +135,7 @@ module Dragonfly
     end
 
     def full_path(uid)
-      File.join *[root_path, uid].compact
+      File.join(*[root_path, uid].compact).gsub(/\s+/, '_') #replace whitespace with underline
     end
 
     def full_storage_headers(headers, meta)
